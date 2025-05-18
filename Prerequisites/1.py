@@ -1,6 +1,7 @@
 import csv
 import random
 import math
+import time
 import matplotlib.pyplot as plt
 
 def load_data(filename):
@@ -54,7 +55,8 @@ def gradient_descent(train_data, lr=0.01, epochs=1000):
     weights = [0.0] * n_features
     bias = 0.0
     cost_history = []
-
+    
+    start_time = time.time()
     for epoch in range(epochs):
         dw = [0.0] * n_features
         db = 0.0
@@ -75,8 +77,9 @@ def gradient_descent(train_data, lr=0.01, epochs=1000):
         cost_history.append(cost)
         if epoch % 100 == 0:
             print(f"Epoch {epoch}, Cost: {cost:.4f}")
-
-    return weights, bias, cost_history
+    
+    total_time = time.time() - start_time
+    return weights, bias, cost_history , total_time
 
 def evaluate(data, weights, bias):
     errors = []
@@ -103,10 +106,11 @@ if __name__ == "__main__":
     norm_data, means, stds = normalize_data(raw_data)
     train_data, val_data = train_val_split(norm_data)
 
-    weights, bias, cost_history = gradient_descent(train_data, lr=0.01, epochs=1000)
+    weights, bias, cost_history , time_taken = gradient_descent(train_data, lr=0.01, epochs=1000)
+    print(f"\n[NumPy] Training time: {time_taken:.3f} seconds")
     print("Final weights:", weights)
     print("Final bias:", bias)
-
+    
     mae, rmse, r2 = evaluate(val_data, weights, bias)
     print(f"\nEvaluation on validation set:\nMAE: {mae:.4f}\nRMSE: {rmse:.4f}\nR2 Score: {r2:.4f}")
 
